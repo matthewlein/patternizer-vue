@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app" v-cloak>
+
+    <section class="controls">
+      <label>
+        {{ stripes[currentStripeId].opacity }}
+        <input name="opacity" v-bind:value="stripes[currentStripeId].opacity" type="range" class="range" v-on:change="onRangeChange" min="0" max="100">
+      </label>
+      <label>
+        {{ stripes[currentStripeId].width }}
+        <input name="width" v-bind:value="stripes[currentStripeId].width" type="range" class="range" v-on:change="onRangeChange" min="1" max="200">
+      </label>
+      <label>
+        {{ stripes[currentStripeId].gap }}
+        <input name="gap" v-bind:value="stripes[currentStripeId].gap" type="range" class="range" v-on:change="onRangeChange" min="1" max="200">
+      </label>
+      <label>
+        {{ stripes[currentStripeId].offset }}
+        <input name="offset" v-bind:value="stripes[currentStripeId].offset" type="range" class="range" v-on:change="onRangeChange" min="0" max="200">
+      </label>
+    </section>
+
+    <section class="stripes">
+      <ol>
+        <li v-for="(stripe, index) in stripes" class="stripe" v-on:click="onStripeClick" v-bind:class="getStripeActiveClass(index)">
+          <div class="hide-show"></div>
+          <div class="color-bar" v-bind:style="{ backgroundColor: stripe.color }"></div>
+          <div class="ui-icon close-box"></div>
+        </li>
+      </ol>
+    </section>
+
+    <section class="bg-color">
+      <label for="bgColorInput" id="bgColorLabel">
+        Bg Color
+        <input v-model="bg">
+      </label>
+      <div style="width: 100px; height: 100px;" v-bind:style="{ backgroundColor: bg }"></div>
+    </section>
+
+
+  </div>
+
+  <script src="https://unpkg.com/vue"></script>
+  <script src="script.js"></script>
+</body>
+</html>

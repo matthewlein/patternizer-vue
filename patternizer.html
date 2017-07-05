@@ -1,0 +1,196 @@
+<!doctype html>
+
+<!--[if lt IE 7 ]> <html class="no-js ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]>    <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]>    <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <title></title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<link rel="stylesheet" href="css/ui-lightness/jquery-ui-1.8.13.custom.css">
+<link rel="stylesheet" href="css/style.css">
+
+
+<script src="js/jquery-1.5.1.min.js"></script>
+<script src="js/jquery-ui-1.8.13.custom.min.js"></script>
+<script src="js/patternizer.js"></script>
+<script src="js/jquery.ba-throttle-debounce.1.1.min.js"></script>
+
+<!-- Color picker -->
+<script src="js/raphael-1.3.1-min.js"></script>
+<script src="js/colorwheel.js"></script>
+<!-- end color picker -->
+
+
+
+
+</head>
+
+<body>
+
+  <header class="unselectable">
+    <h1 class="ir"><a href="/">Patternizer</a></h1>
+    <nav>
+      <li>
+        <a href="#" class="ir" id="about">About</a>
+      </li>
+      <li class="button button-left">
+        <a href="#">New Pattern</a>
+      </li>
+      <li class="button button-right">
+        <a href="#">Duplicate</a>
+      </li>
+      <li class="button button-left">
+        <a href="#">Save</a>
+      </li>
+      <li class="button button-right dropdown">
+        <a href="#">History</a>
+        <div class="menu">
+          menu
+        </div>
+      </li>
+      <li class="button dropdown">
+        <a href="#">Share</a>
+        <div class="menu">
+          <!-- Twitter Share -->
+          <script type="text/javascript">
+            (function(){
+              var twitterWidgets = document.createElement('script');
+              twitterWidgets.type = 'text/javascript';
+              twitterWidgets.async = true;
+              twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+              document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+            })();
+          </script>
+          <a href="http://twitter.com/share" class="twitter-share-button" data-text="I made this with @patternizer" data-count="none">Tweet</a>
+          <span class="twitter-text">Share on Twitter</span>
+          <!-- Facebook share -->
+          <script>function fbs_click() {u=location.href;t=document.title;window.open('http://www.facebook.com/sharer.php?u='+encodeURIComponent(u)+'&t='+encodeURIComponent(t),'sharer','toolbar=0,status=0,width=626,height=436');return false;}</script>
+          <a rel="nofollow" href="http://www.facebook.com/share.php?u=<;url>" onclick="return fbs_click()" target="_blank" class="fb_share_link">Share on Facebook</a>
+        </div>
+      </li>
+      <li class="button dropdown" id="account">
+        <a href="#">Login</a>
+        <div class="menu">
+          <ul>
+            <li><a href="#">My Patterns</a></li>
+            <li><a href="#">My Account</a></li>
+            <li><a href="#">Log Out</a></li>
+          </ul>
+        </div>
+      </li>
+    </nav>
+  </header>
+
+<section id="controls">
+
+
+
+  <div class="panel-group">
+    <ul class="tabs">
+        <li><a href="#settings-panel">Settings</a></li>
+        <li><a href="#code-panel">Code</a></li>
+    </ul>
+
+    <!-- Controls -->
+    <div id="settings-panel" class="panel">
+
+
+      <label for="colorInput" class="clearfix" id="colorLabel">
+        Color
+        <input name="colorInput" value="" id="colorInput">
+        <div id="colorpicker"></div>
+      </label>
+
+
+      <label for="modeCheck" title="Stripes go vertically and horizontally" class="clearfix" id="modeLabel">
+        Plaid
+        <input type="checkbox" name="modeCheck" value="plaid" id="modeCheck">
+      </label>
+
+      <label for="rotationInput" class="clearfix" id="rotationLabel">
+        <span class="rotationText">Rotation</span><span class="degrees">º</span>
+        <input name="rotationInput" value="" id="rotationInput" class="control">
+        <canvas id="rotator" width="49" height="49"></canvas>
+      </label>
+
+
+
+      <!-- Sliders -->
+      <label for="opacityInput" class="clearfix">
+        Opacity
+        <input name="opacityInput" value="" id="opacityInput" class="control">
+        <div class="slider" id="opacitySlider"></div>
+      </label>
+
+      <label for="widthInput" class="clearfix">
+        Width
+        <input name="widthInput" value="" id="widthInput" class="control">
+        <div class="slider" id="widthSlider"></div>
+      </label>
+
+      <label for="gapInput" title="Distance between stripes" class="clearfix">
+        Gap
+        <input name="gapInput" value="" id="gapInput" class="control">
+        <div class="slider" id="gapSlider"></div>
+      </label>
+
+      <label for="offsetInput" title="Moves the stripes. Use to nudge the pattern around" class="clearfix">
+        Offset
+        <input name="offsetInput" value="" id="offsetInput" class="control">
+        <div class="slider" id="offsetSlider"></div>
+      </label>
+
+
+      </div>
+
+      <div id="code-panel" class="panel">
+      <div id="codeOutput"><!-- CODE --></div>
+      </div>
+  </div>
+
+
+  <div class="panel-group">
+    <ul class="tabs">
+        <li><a href="#stripes-panel">Stripes</a></li>
+        <li><a href="#library-panel">Library</a></li>
+    </ul>
+
+      <div id="stripes-panel" class="panel">
+
+      <a href="#" id="new">New Stripe</a>
+
+      <!-- STRIPES -->
+      <ul id="stripeList">
+      </ul>
+
+
+      <!-- BG COLOR PICKER -->
+      <label for="bgColorInput" id="bgColorLabel">Bg Color
+        <input name="bgColorInput" value="" id="bgColorInput">
+      </label>
+      <div id="bgColor"></div>
+
+      </div>
+      <div id="library-panel" class="panel">
+           <!-- LIBRARY -->
+      </div>
+  </div>
+
+
+</section>
+
+<canvas id="preview" width="500" height="500"></canvas>
+
+<script src="js/app.js"></script>
+
+</body>
+</html>
