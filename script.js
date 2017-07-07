@@ -171,35 +171,57 @@ Vue.component('patternizer', {
   }
 });
 
+window.pattern = {
+  stripes: [
+    {
+      color: '#a03ad6',
+      rotation: 200,
+      opacity: 50,
+      // plaid: true,
+      mode: 'plaid',
+      width: 10,
+      gap: 10,
+      offset: 0,
+      visible: true
+    },
+    {
+      color: '#FFB4D6',
+      rotation: 45,
+      opacity: 80,
+      // plaid: false,
+      mode: 'normal',
+      width: 30,
+      gap: 10,
+      offset: 0,
+      visible: true
+    }
+  ],
+  bg: '#bb1a1a',
+};
+
+function migratePatternData(data) {
+  const newData = Object.assign({}, data);
+  const stripes = newData.stripes.map(function(stripe) {
+    const clone = Object.assign({}, stripe);
+    if (clone.hasOwnProperty('mode')) {
+      clone.plaid = (clone.mode === 'plaid');
+      delete clone.mode;
+    }
+    return clone;
+  });
+  newData.stripes = stripes;
+  return newData;
+}
 
 var app = new Vue({
   el: '#app',
-  data: {
-    currentStripeId: 0,
-    stripes: [
-      {
-        color: '#a03ad6',
-        rotation: 200,
-        opacity: 50,
-        plaid: true,
-        width: 10,
-        gap: 10,
-        offset: 0,
-        visible: true
-      },
-      {
-        color: '#FFB4D6',
-        rotation: 45,
-        opacity: 80,
-        plaid: false,
-        width: 30,
-        gap: 10,
-        offset: 0,
-        visible: true
-      }
-    ],
-    bg: '#bb1a1a',
-  },
+  data: Object.assign(
+    {},
+    {
+      currentStripeId: 0,
+    },
+    migratePatternData(window.pattern)
+  ),
   methods: {
     onRangeChange() {
       const name = event.target.name;
@@ -238,20 +260,16 @@ var app = new Vue({
       return index;
     },
     dataFiltered: function() {
-      const visibleStripes = this.stripes.filter(function(s){ return s.visible === true })
+      const visibleStripes = this.stripes.filter(function(stripe){ return stripe.visible === true })
+      const stripesCleaned = visibleStripes.map(function(stripe) {
+        const clone = Object.assign({}, stripe);
+        delete clone.visible;
+        return clone;
+      })
       return {
-        stripes: visibleStripes,
+        stripes: stripesCleaned,
         bg: this.bg
       }
     }
   },
-  watch: {
-    stripes: {
-      handler: function (val, oldVal) {
-        console.log('new', val,'old', oldVal)
-        this.$forceUpdate();
-      },
-      deep: true
-    }
-  }
 });
