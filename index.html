@@ -42,9 +42,10 @@
     </section>
 
     <section class="stripes">
+      <button type="button" @click="onNewStripe">New Stripe</button>
       <ol>
         <draggable :list="stripes" @update="onSortUpdate">
-          <li v-for="(stripe, index) in stripes" class="stripe" :class="getStripeActiveClass(index)" @click="onStripeClick">
+          <li v-for="(stripe, index) in stripes" class="stripe" :class="getStripeClasses(index)" @click="onStripeClick">
             <input type="checkbox" v-model="stripe.visible">
             <div class="color-bar" :style="{ backgroundColor: stripe.color }"></div>
             <button type="button" @click="removeStripe(index)">X</button>
@@ -55,13 +56,18 @@
 
     <color-picker v-model="bg"></color-picker>
 
+    <patternizer v-model="dataFiltered()"></patternizer>
+
   </div>
+
+
 
   <script src="https://unpkg.com/vue"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.6.0/Sortable.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.14.1/vuedraggable.min.js"></script>
   <script src="js/jquery-2.1.0.min.js"></script>
   <script src="js/farbtastic.js"></script>
+  <script src="js/patternizer.js"></script>
 
   <script src="script.js"></script>
 </body>

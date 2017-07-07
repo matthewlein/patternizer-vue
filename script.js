@@ -147,6 +147,31 @@ Vue.component('color-picker', {
 });
 
 
+Vue.component('patternizer', {
+  props: ['value'],
+  template: `<canvas data-patternizer></canvas>`,
+  mounted: function () {
+    this.canvas = this.$el;
+    this.ctx = this.canvas.getContext('2d');
+    this.renderPattern();
+  },
+  watch: {
+    value: function (value) {
+      this.renderPattern();
+    },
+  },
+  methods: {
+    clearCanvas() {
+      this.ctx.clearRect( 0, 0, this.canvas.width, this.canvas.height )
+    },
+    renderPattern() {
+      this.clearCanvas();
+      this.canvas.patternizer(this.value)
+    },
+  }
+});
+
+
 var app = new Vue({
   el: '#app',
   data: {
@@ -182,38 +207,51 @@ var app = new Vue({
       this.stripes[this.currentStripeId][name] = Number(value);
     },
     onStripeClick() {
-      this.currentStripeId = getElementIndex(event.currentTarget);
+      this.currentStripeId = this.getElementIndex(event.currentTarget);
     },
     removeStripe(index) {
       this.stripes.splice(index, 1);
     },
-    getStripeActiveClass(index) {
+    getStripeClasses(index) {
+      var classes = [];
       if (this.currentStripeId === index) {
-        return 'active';
-      } else {
-        return null;
+        classes.push('active');
       }
+      if (!this.stripes[index].visible) {
+        classes.push('hidden');
+      }
+      return classes.join(' ');
     },
     onSortUpdate(event) {
       this.currentStripeId = event.newIndex;
     },
+    onNewStripe() {
+      const newStripe = Object.assign({}, this.stripes[this.currentStripeId]);
+      this.stripes.unshift(newStripe);
+      this.currentStripeId = 0;
+    },
+    getElementIndex(node) {
+      var index = 0;
+      while ( (node = node.previousElementSibling) ) {
+        index++;
+      }
+      return index;
+    },
+    dataFiltered: function() {
+      const visibleStripes = this.stripes.filter(function(s){ return s.visible === true })
+      return {
+        stripes: visibleStripes,
+        bg: this.bg
+      }
+    }
+  },
+  watch: {
+    stripes: {
+      handler: function (val, oldVal) {
+        console.log('new', val,'old', oldVal)
+        this.$forceUpdate();
+      },
+      deep: true
+    }
   }
-})
-
-
-function getElementIndex(node) {
-  var index = 0;
-  while ( (node = node.previousElementSibling) ) {
-    index++;
-  }
-  return index;
-}
-
-
-
-
-// ------------------------------------------------------------------------- //
-//
-// ------------------------------------------------------------------------- //
-
-// helpers
+});
