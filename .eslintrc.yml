@@ -1,0 +1,28 @@
+---
+root: true
+extends: airbnb-base
+
+env:
+  browser: true
+  es6: true
+
+# http://eslint.org/docs/rules/
+rules:
+  import/no-extraneous-dependencies: off
+  import/no-unresolved: off
+  import/extensions: off
+  no-underscore-dangle: off
+  prefer-arrow-callback: warn
+  max-len: warn
+  no-unused-vars: warn
+  no-param-reassign: warn
+  no-restricted-syntax: off
+  arrow-body-style: off
+  no-mixed-operators: [
+    error,
+    allowSamePrecedence: true
+  ]
+  comma-dangle: [warn, 'always-multiline']
+
+globals:
+  filepicker: true
