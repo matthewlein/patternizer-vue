@@ -20820,22 +20820,24 @@ _vue2.default.component('color-picker', {
     var vm = this;
     // farbtastic $.browser fix
     _jquery2.default.browser = { msie: false };
-    var $wrapper = (0, _jquery2.default)(this.$el).find('[data-colorpicker-wrapper]');
+    this.$wrapper = (0, _jquery2.default)(this.$el).find('[data-colorpicker-wrapper]');
     var $input = (0, _jquery2.default)(this.$el).find('[data-colorpicker-input]');
-    _jquery2.default.farbtastic($wrapper, {
+    _jquery2.default.farbtastic(this.$wrapper, {
       callback: $input,
       width: 150,
       height: 150
     }).setColor(this.value);
-    $input.on('change', function () {
-      vm.$emit('input', this.value);
-    });
+    $input.on('change', this.updateValue);
   },
 
+  methods: {
+    updateValue: function updateValue(event) {
+      this.$emit('input', event.target.value);
+    }
+  },
   watch: {
     value: function value(_value) {
-      var $wrapper = (0, _jquery2.default)(this.$el).find('[data-colorpicker-wrapper]');
-      _jquery2.default.farbtastic($wrapper).setColor(_value);
+      _jquery2.default.farbtastic(this.$wrapper).setColor(_value);
     }
   }
 });

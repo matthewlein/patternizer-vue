@@ -1,6 +1,5 @@
 import Vue from 'vue';
-import draggable from 'vuedraggable'
-
+import draggable from 'vuedraggable';
 import $ from 'jquery';
 import 'farbtastic';
 import 'patternizer';
@@ -123,28 +122,30 @@ Vue.component('color-picker', {
     const vm = this;
     // farbtastic $.browser fix
     $.browser = { msie: false };
-    const $wrapper = $(this.$el).find('[data-colorpicker-wrapper]');
+    this.$wrapper = $(this.$el).find('[data-colorpicker-wrapper]');
     const $input = $(this.$el).find('[data-colorpicker-input]');
-    $.farbtastic($wrapper, {
+    $.farbtastic(this.$wrapper, {
       callback: $input,
       width: 150,
-      height: 150
+      height: 150,
     }).setColor(this.value);
-    $input.on('change', function() {
-      vm.$emit('input', this.value);
-    });
+    $input.on('change', this.updateValue);
+  },
+  methods: {
+    updateValue(event) {
+      this.$emit('input', event.target.value);
+    },
   },
   watch: {
     value(value) {
-      const $wrapper = $(this.$el).find('[data-colorpicker-wrapper]');
-      $.farbtastic($wrapper).setColor(value);
-    }
-  }
+      $.farbtastic(this.$wrapper).setColor(value);
+    },
+  },
 });
 
 Vue.component('patternizer', {
   props: ['value'],
-  template: `<canvas data-patternizer></canvas>`,
+  template: '<canvas data-patternizer></canvas>',
   mounted() {
     this.canvas = this.$el;
     this.ctx = this.canvas.getContext('2d');
@@ -153,7 +154,7 @@ Vue.component('patternizer', {
   watch: {
     value(value) {
       this.renderPattern();
-    }
+    },
   },
   methods: {
     clearCanvas() {
@@ -162,8 +163,8 @@ Vue.component('patternizer', {
     renderPattern() {
       this.clearCanvas();
       this.canvas.patternizer(this.value);
-    }
-  }
+    },
+  },
 });
 
 window.pattern = {
@@ -177,7 +178,7 @@ window.pattern = {
       width: 10,
       gap: 10,
       offset: 0,
-      visible: true
+      visible: true,
     },
     {
       color: '#FFB4D6',
@@ -188,10 +189,10 @@ window.pattern = {
       width: 30,
       gap: 10,
       offset: 0,
-      visible: true
-    }
+      visible: true,
+    },
   ],
-  bg: '#bb1a1a'
+  bg: '#bb1a1a',
 };
 
 function migratePatternData(data) {
