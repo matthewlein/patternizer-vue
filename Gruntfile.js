@@ -57,44 +57,34 @@ module.exports = function (grunt) {
 
     // watch files
     watch: {
-      options: {
-        livereload: true
-      },
-      //
-      // Structure
-      //
-      html: {
-        files: [
-          './index.html'
-        ]
-      },
-
-      //
-      // Scripts
-      //
-      // webpack takes care of the watch/compile, just watch the finished bundles
-      js: {
-        files: [
-          './js/bundles/*.js'
-        ]
-      },
       // Styling
       //
-      css: {
-        files: [
-          'css/*.css'
-        ]
-      },
       sass: {
         options: {
           // don't livereload sass because we livereload the css
           livereload: false
         },
         files: [
-          'sass/**/*.scss'
+          'scss/**/*.scss'
         ],
         // compile on change
         tasks: ['sass:dev', 'postcss']
+      }
+    },
+
+    browserSync: {
+      bsFiles: {
+        src : [
+          'css/*.css',
+          'index.html',
+          './js/bundles/*.js',
+        ]
+      },
+      options: {
+        watchTask: true,
+        server: {
+          baseDir: "./"
+        }
       }
     },
 
@@ -182,6 +172,7 @@ module.exports = function (grunt) {
   grunt.registerTask('default', [
     'compile:dev',
     'postcss',
+    'browserSync',
     'watch'
   ]);
 

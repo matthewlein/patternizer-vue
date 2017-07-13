@@ -1,0 +1,28 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #7E7E7E;
+  background-image: url('../images/bg-controls.png');
+  color: #fff;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.main {
+  display: flex;
+}
+.preview {
+  width: 100%;
+  position: relative;
+}
+.preview__canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+}

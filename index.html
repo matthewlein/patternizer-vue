@@ -7,58 +7,88 @@
 </head>
 <body>
   <div id="app" v-cloak>
-
-    <section class="controls">
-
-      <rotation-input v-model="stripes[currentStripeId].rotation"></rotation-input>
-
-      <label title="Stripes go vertically and horizontally">
-        Plaid
-        <input type="checkbox" v-model="stripes[currentStripeId].plaid">
-      </label>
-
-      <color-picker v-model="stripes[currentStripeId].color"></color-picker>
-
-      <label>
-        Opacity
-        <input name="opacity" :value="stripes[currentStripeId].opacity" type="range" class="range" @change="onRangeChange" min="0" max="100">
-        <input name="opacity" :value="stripes[currentStripeId].opacity" type="number" @change="onRangeChange" min="0" max="100">
-      </label>
-      <label>
-        Width
-        <input name="width" :value="stripes[currentStripeId].width" type="range" class="range" @change="onRangeChange" min="1" max="200">
-        <input name="width" :value="stripes[currentStripeId].width" type="number" @change="onRangeChange" min="1" max="200">
-      </label>
-      <label>
-        Gap
-        <input name="gap" :value="stripes[currentStripeId].gap" type="range" class="range" @change="onRangeChange" min="1" max="200">
-        <input name="gap" :value="stripes[currentStripeId].gap" type="number" @change="onRangeChange" min="1" max="200">
-      </label>
-      <label>
-        Offset
-        <input name="offset" :value="stripes[currentStripeId].offset" type="range" class="range" @change="onRangeChange" min="0" max="200">
-        <input name="offset" :value="stripes[currentStripeId].offset" type="number" @change="onRangeChange" min="0" max="200">
-      </label>
-    </section>
-
-    <section class="stripes">
-      <button type="button" @click="onNewStripe">New Stripe</button>
-      <ol>
-        <draggable :list="stripes" @update="onSortUpdate">
-          <li v-for="(stripe, index) in stripes" class="stripe" :class="getStripeClasses(index)" @click="onStripeClick">
-            <input type="checkbox" v-model="stripe.visible">
-            <div class="color-bar" :style="{ backgroundColor: stripe.color }"></div>
-            <button type="button" @click="removeStripe(index)">X</button>
+    <header class="site-header">
+      <h1>Patternizer</h1>
+      <nav>
+        <ul>
+          <li>
+            <a href="">Hi</a>
           </li>
-        </draggable>
-      </ol>
-    </section>
+        </ul>
+      </nav>
+    </header>
+    <main class="main">
+      <section class="controls">
 
-    <color-picker v-model="bg"></color-picker>
+        <section class="stripe-settings">
 
-    <patternizer v-model="dataFiltered()"></patternizer>
+          <rotation-input v-model="stripes[currentStripeId].rotation"></rotation-input>
 
-    <pre>{{ dataFiltered() }}</pre>
+          <label title="Stripes go vertically and horizontally">
+            Plaid
+            <input type="checkbox" v-model="stripes[currentStripeId].plaid">
+          </label>
+
+          <color-picker v-model="stripes[currentStripeId].color"></color-picker>
+
+          <label class="controls__label">
+            <span class="controls__label-text">Opacity</span>
+            <div class="controls__range">
+              <input class="range" name="opacity" :value="stripes[currentStripeId].opacity" type="range" @input="onRangeChange" min="0" max="100">
+            </div>
+            <div class="controls__range-input-wrapper">
+              <input class="controls__range-input" name="opacity" :value="stripes[currentStripeId].opacity" type="number" @change="onRangeChange" min="0" max="100">
+            </div>
+          </label>
+          <label class="controls__label">
+            <span class="controls__label-text">Width</span>
+            <div class="controls__range">
+              <input name="width" :value="stripes[currentStripeId].width" type="range" class="range" @input="onRangeChange" min="1" max="200">
+            </div>
+            <div class="controls__range-input-wrapper">
+              <input class="controls__range-input" name="width" :value="stripes[currentStripeId].width" type="number" @change="onRangeChange" min="1" max="200">
+            </div>
+          </label>
+          <label class="controls__label">
+            <span class="controls__label-text">Gap</span>
+            <div class="controls__range">
+              <input name="gap" :value="stripes[currentStripeId].gap" type="range" class="range" @input="onRangeChange" min="1" max="200">
+            </div>
+            <div class="controls__range-input-wrapper">
+              <input class="controls__range-input" name="gap" :value="stripes[currentStripeId].gap" type="number" @change="onRangeChange" min="1" max="200">
+            </div>
+          </label>
+          <label class="controls__label">
+            <span class="controls__label-text">Offset</span>
+            <div class="controls__range">
+              <input name="offset" id="offset" :value="stripes[currentStripeId].offset" type="range" class="range" @input="onRangeChange" min="0" max="200">
+            </div>
+            <div class="controls__range-input-wrapper">
+              <input class="controls__range-input" name="offset" :value="stripes[currentStripeId].offset" type="number" @change="onRangeChange" min="0" max="200">
+            </div>
+          </label>
+        </section>
+
+        <section class="stripes">
+          <button class="controls__button" type="button" @click="onNewStripe">New Stripe</button>
+          <ol class="stripes__list">
+            <draggable :list="stripes" @update="onSortUpdate">
+              <li v-for="(stripe, index) in stripes" class="stripes__item" :class="getStripeClasses(index)" @click="onStripeClick">
+                <input type="checkbox" v-model="stripe.visible">
+                <div class="stripes__item-color" :style="{ backgroundColor: stripe.color }"></div>
+                <button class="stripes__item-delete" type="button" @click="removeStripe(index)">X</button>
+              </li>
+            </draggable>
+          </ol>
+        </section>
+
+        <color-picker v-model="bg"></color-picker>
+
+        <!-- <pre>{{ dataFiltered() }}</pre> -->
+      </section>
+
+      <patternizer v-model="dataFiltered()"></patternizer>
+    </main>
 
   </div>
 

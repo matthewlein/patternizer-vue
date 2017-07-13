@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -20681,322 +20681,10 @@ return Vue$3;
 
 })));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ }),
 /* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _vue = __webpack_require__(3);
-
-var _vue2 = _interopRequireDefault(_vue);
-
-var _vuedraggable = __webpack_require__(6);
-
-var _vuedraggable2 = _interopRequireDefault(_vuedraggable);
-
-var _jquery = __webpack_require__(0);
-
-var _jquery2 = _interopRequireDefault(_jquery);
-
-__webpack_require__(1);
-
-__webpack_require__(2);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-_vue2.default.component('rotation-input', {
-  props: ['value'],
-  template: '<label>\n              Rotation\xBA\n              <input type=\'number\' data-rotator-input>\n              <canvas id=\'rotator\' width=\'49\' height=\'49\' class=\'rotator\' data-rotator></canvas>\n            </label>',
-  mounted: function mounted() {
-    this.$rotator = (0, _jquery2.default)(this.$el).find('[data-rotator]');
-    this.rotator = this.$rotator[0];
-    this.$rotationInput = (0, _jquery2.default)(this.$el).find('[data-rotator-input]');
-    this.rCenter = this.rotator.width / 2;
-    this.rCtx = this.rotator.getContext('2d');
-    this.rCtx.translate(this.rCenter, this.rCenter);
-
-    this.rotator.addEventListener('mousedown', this.onPress, false);
-    this.$rotationInput.on('change', this.onRotationInputChange);
-    this.$rotationInput.val(this.value);
-    this.setRotation(this.value);
-  },
-
-  watch: {
-    value: function value() {
-      this.$rotationInput = (0, _jquery2.default)(this.$el).find('[data-rotator-input]');
-      this.$rotationInput.val(this.value).trigger('change');
-      this.setRotation(this.value);
-    }
-  },
-  methods: {
-    deg_rad: function deg_rad(deg) {
-      return Math.PI / 180 * deg;
-    },
-    rad_deg: function rad_deg(rad) {
-      return rad * (180 / Math.PI);
-    },
-    onPress: function onPress(event) {
-      event.preventDefault();
-      document.addEventListener('mousemove', this.dragRotation, false);
-      document.addEventListener('mouseup', this.onRelease, false);
-      this.dragRotation(event);
-    },
-    dragRotation: function dragRotation(event) {
-      var degrees = this.getRotationDegrees(event);
-      this.$emit('input', degrees);
-    },
-    onRelease: function onRelease() {
-      document.removeEventListener('mousemove', this.dragRotation, false);
-    },
-    getRotationDegrees: function getRotationDegrees(event) {
-      var coords = this.getNormalizedCoordinates(event);
-      var x = coords.x;
-      var y = coords.y;
-      var degrees = Math.round(this.rad_deg(Math.atan(y / x)));
-
-      if (x >= 0 && y <= 0 || x >= 0 && y >= 0) {
-        // top right
-        degrees += 90;
-      } else {
-        // bottom left
-        degrees += 270;
-      }
-      return degrees;
-    },
-    getNormalizedCoordinates: function getNormalizedCoordinates(event) {
-      var x = event.pageX - (this.$rotator.offset().left + this.rCenter);
-      var y = event.pageY - (this.$rotator.offset().top + this.rCenter);
-      var hyp = Math.sqrt(x * x + y * y);
-      var mult = this.rCenter / hyp;
-
-      // normalize to circle size
-      x = Math.round(x * mult);
-      y = Math.round(y * mult);
-      return {
-        x: x,
-        y: y
-      };
-    },
-    setRotation: function setRotation(angle) {
-      var hyp = this.rCenter;
-      var degrees = angle || 0;
-      var rads = this.deg_rad(degrees);
-      var adj = -Math.round(hyp * Math.cos(rads));
-      var opp = Math.round(hyp * Math.sin(rads));
-
-      this.drawShapes(opp, adj);
-    },
-    drawShapes: function drawShapes(x, y) {
-      this.rCtx.clearRect(-this.rCenter, -this.rCenter, this.rotator.width, this.rotator.height);
-      // angle line
-      this.rCtx.strokeStyle = '#666';
-      this.rCtx.lineWidth = 3;
-      this.rCtx.beginPath();
-      this.rCtx.moveTo(0, 0);
-      this.rCtx.lineTo(x, y);
-      this.rCtx.closePath();
-      this.rCtx.stroke();
-    },
-    onRotationInputChange: function onRotationInputChange(event) {
-      var angle = Number((0, _jquery2.default)(event.target).val());
-      if (angle > 360) {
-        angle -= 360;
-      } else if (angle < 0) {
-        angle += 360;
-      }
-      this.$emit('input', angle);
-    }
-  }
-});
-
-_vue2.default.component('color-picker', {
-  props: ['value'],
-  template: '<div class=\'color-picker\'>\n               <input type=\'text\' data-colorpicker-input>\n               <div data-colorpicker-wrapper></div>\n             </div>',
-  mounted: function mounted() {
-    var vm = this;
-    // farbtastic $.browser fix
-    _jquery2.default.browser = { msie: false };
-    this.$wrapper = (0, _jquery2.default)(this.$el).find('[data-colorpicker-wrapper]');
-    var $input = (0, _jquery2.default)(this.$el).find('[data-colorpicker-input]');
-    _jquery2.default.farbtastic(this.$wrapper, {
-      callback: $input,
-      width: 150,
-      height: 150
-    }).setColor(this.value);
-    $input.on('change', this.updateValue);
-  },
-
-  methods: {
-    updateValue: function updateValue(event) {
-      this.$emit('input', event.target.value);
-    }
-  },
-  watch: {
-    value: function value(_value) {
-      _jquery2.default.farbtastic(this.$wrapper).setColor(_value);
-    }
-  }
-});
-
-_vue2.default.component('patternizer', {
-  props: ['value'],
-  template: '<canvas data-patternizer></canvas>',
-  mounted: function mounted() {
-    this.canvas = this.$el;
-    this.ctx = this.canvas.getContext('2d');
-    this.renderPattern();
-  },
-
-  watch: {
-    value: function value(_value2) {
-      this.renderPattern();
-    }
-  },
-  methods: {
-    clearCanvas: function clearCanvas() {
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    },
-    renderPattern: function renderPattern() {
-      this.clearCanvas();
-      this.canvas.patternizer(this.value);
-    }
-  }
-});
-
-window.pattern = {
-  stripes: [{
-    color: '#a03ad6',
-    rotation: 200,
-    opacity: 50,
-    // plaid: true,
-    mode: 'plaid',
-    width: 10,
-    gap: 10,
-    offset: 0,
-    visible: true
-  }, {
-    color: '#FFB4D6',
-    rotation: 45,
-    opacity: 80,
-    // plaid: false,
-    mode: 'normal',
-    width: 30,
-    gap: 10,
-    offset: 0,
-    visible: true
-  }],
-  bg: '#bb1a1a'
-};
-
-function migratePatternData(data) {
-  var newData = Object.assign({}, data);
-  var stripes = newData.stripes.map(function (stripe) {
-    var clone = Object.assign({}, stripe);
-    if (Object.prototype.hasOwnProperty.call(clone, 'mode')) {
-      clone.plaid = clone.mode === 'plaid';
-      delete clone.mode;
-    }
-    return clone;
-  });
-  newData.stripes = stripes;
-  return newData;
-}
-
-var app = new _vue2.default({
-  el: '#app',
-  components: {
-    draggable: _vuedraggable2.default
-  },
-  data: Object.assign({}, {
-    currentStripeId: 0
-  }, migratePatternData(window.pattern)),
-  methods: {
-    onRangeChange: function onRangeChange() {
-      var name = event.target.name;
-      var value = event.target.value;
-      this.stripes[this.currentStripeId][name] = Number(value);
-    },
-    onStripeClick: function onStripeClick() {
-      this.currentStripeId = this.getElementIndex(event.currentTarget);
-    },
-    removeStripe: function removeStripe(index) {
-      this.stripes.splice(index, 1);
-    },
-    getStripeClasses: function getStripeClasses(index) {
-      var classes = [];
-      if (this.currentStripeId === index) {
-        classes.push('active');
-      }
-      if (!this.stripes[index].visible) {
-        classes.push('hidden');
-      }
-      return classes.join(' ');
-    },
-    onSortUpdate: function onSortUpdate(event) {
-      this.currentStripeId = event.newIndex;
-    },
-    onNewStripe: function onNewStripe() {
-      var newStripe = Object.assign({}, this.stripes[this.currentStripeId]);
-      this.stripes.unshift(newStripe);
-      this.currentStripeId = 0;
-    },
-    getElementIndex: function getElementIndex(node) {
-      var index = 0;
-      while (node = node.previousElementSibling) {
-        index += 1;
-      }
-      return index;
-    },
-    dataFiltered: function dataFiltered() {
-      var visibleStripes = this.stripes.filter(function (stripe) {
-        return stripe.visible === true;
-      });
-      var stripesCleaned = visibleStripes.map(function (stripe) {
-        var clone = Object.assign({}, stripe);
-        delete clone.visible;
-        return clone;
-      });
-      return {
-        stripes: stripesCleaned,
-        bg: this.bg
-      };
-    }
-  }
-});
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21362,7 +21050,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
   }
 
   if (true) {
-    var Sortable = __webpack_require__(7);
+    var Sortable = __webpack_require__(6);
     module.exports = buildDraggable(Sortable);
   } else if (typeof define == "function" && define.amd) {
     define(['sortablejs'], function (Sortable) {
@@ -21375,7 +21063,298 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 })();
 
 /***/ }),
-/* 7 */
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _vue = __webpack_require__(3);
+
+var _vue2 = _interopRequireDefault(_vue);
+
+var _vuedraggable = __webpack_require__(4);
+
+var _vuedraggable2 = _interopRequireDefault(_vuedraggable);
+
+var _jquery = __webpack_require__(0);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+__webpack_require__(1);
+
+__webpack_require__(2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_vue2.default.component('rotation-input', {
+  props: ['value'],
+  template: '<label>\n              Rotation\xBA\n              <input type=\'number\' data-rotator-input>\n              <canvas id=\'rotator\' width=\'49\' height=\'49\' class=\'rotator\' data-rotator></canvas>\n            </label>',
+  mounted: function mounted() {
+    this.$rotator = (0, _jquery2.default)(this.$el).find('[data-rotator]');
+    this.rotator = this.$rotator[0];
+    this.$rotationInput = (0, _jquery2.default)(this.$el).find('[data-rotator-input]');
+    this.rCenter = this.rotator.width / 2;
+    this.rCtx = this.rotator.getContext('2d');
+    this.rCtx.translate(this.rCenter, this.rCenter);
+
+    this.rotator.addEventListener('mousedown', this.onPress, false);
+    this.$rotationInput.on('change', this.onRotationInputChange);
+    this.$rotationInput.val(this.value);
+    this.setRotation(this.value);
+  },
+
+  watch: {
+    value: function value() {
+      this.$rotationInput = (0, _jquery2.default)(this.$el).find('[data-rotator-input]');
+      this.$rotationInput.val(this.value).trigger('change');
+      this.setRotation(this.value);
+    }
+  },
+  methods: {
+    deg_rad: function deg_rad(deg) {
+      return Math.PI / 180 * deg;
+    },
+    rad_deg: function rad_deg(rad) {
+      return rad * (180 / Math.PI);
+    },
+    onPress: function onPress(event) {
+      event.preventDefault();
+      document.addEventListener('mousemove', this.dragRotation, false);
+      document.addEventListener('mouseup', this.onRelease, false);
+      this.dragRotation(event);
+    },
+    dragRotation: function dragRotation(event) {
+      var degrees = this.getRotationDegrees(event);
+      this.$emit('input', degrees);
+    },
+    onRelease: function onRelease() {
+      document.removeEventListener('mousemove', this.dragRotation, false);
+    },
+    getRotationDegrees: function getRotationDegrees(event) {
+      var coords = this.getNormalizedCoordinates(event);
+      var x = coords.x;
+      var y = coords.y;
+      var degrees = Math.round(this.rad_deg(Math.atan(y / x)));
+
+      if (x >= 0 && y <= 0 || x >= 0 && y >= 0) {
+        // top right
+        degrees += 90;
+      } else {
+        // bottom left
+        degrees += 270;
+      }
+      return degrees;
+    },
+    getNormalizedCoordinates: function getNormalizedCoordinates(event) {
+      var x = event.pageX - (this.$rotator.offset().left + this.rCenter);
+      var y = event.pageY - (this.$rotator.offset().top + this.rCenter);
+      var hyp = Math.sqrt(x * x + y * y);
+      var mult = this.rCenter / hyp;
+
+      // normalize to circle size
+      x = Math.round(x * mult);
+      y = Math.round(y * mult);
+      return {
+        x: x,
+        y: y
+      };
+    },
+    setRotation: function setRotation(angle) {
+      var hyp = this.rCenter;
+      var degrees = angle || 0;
+      var rads = this.deg_rad(degrees);
+      var adj = -Math.round(hyp * Math.cos(rads));
+      var opp = Math.round(hyp * Math.sin(rads));
+
+      this.drawShapes(opp, adj);
+    },
+    drawShapes: function drawShapes(x, y) {
+      this.rCtx.clearRect(-this.rCenter, -this.rCenter, this.rotator.width, this.rotator.height);
+      // angle line
+      this.rCtx.strokeStyle = '#666';
+      this.rCtx.lineWidth = 3;
+      this.rCtx.beginPath();
+      this.rCtx.moveTo(0, 0);
+      this.rCtx.lineTo(x, y);
+      this.rCtx.closePath();
+      this.rCtx.stroke();
+    },
+    onRotationInputChange: function onRotationInputChange(event) {
+      var angle = Number((0, _jquery2.default)(event.target).val());
+      if (angle > 360) {
+        angle -= 360;
+      } else if (angle < 0) {
+        angle += 360;
+      }
+      this.$emit('input', angle);
+    }
+  }
+});
+
+_vue2.default.component('color-picker', {
+  props: ['value'],
+  template: '<div class=\'color-picker\'>\n                <label class="color-picker__label">\n                  <span class="color-picker__label-text">Color</span>\n                  <div class="color-picker__input-wrapper">\n                    <input type=\'text\' class="color-picker__input" data-colorpicker-input>\n                    <div class="color-picker__picker" data-colorpicker-wrapper></div>\n                  </div>\n                </label>\n              </div>',
+  mounted: function mounted() {
+    var vm = this;
+    // farbtastic $.browser fix
+    _jquery2.default.browser = { msie: false };
+    this.$wrapper = (0, _jquery2.default)(this.$el).find('[data-colorpicker-wrapper]');
+    var $input = (0, _jquery2.default)(this.$el).find('[data-colorpicker-input]');
+    _jquery2.default.farbtastic(this.$wrapper, {
+      callback: $input,
+      width: 200,
+      height: 200
+    }).setColor(this.value);
+    $input.on('change', this.updateValue);
+  },
+
+  methods: {
+    updateValue: function updateValue(event) {
+      this.$emit('input', event.target.value);
+    }
+  },
+  watch: {
+    value: function value(_value) {
+      _jquery2.default.farbtastic(this.$wrapper).setColor(_value);
+    }
+  }
+});
+
+_vue2.default.component('patternizer', {
+  props: ['value'],
+  template: '<section class="preview">\n               <canvas class="preview__canvas" data-patternizer></canvas>\n             </section>',
+  mounted: function mounted() {
+    this.canvas = (0, _jquery2.default)(this.$el).find('[data-patternizer]')[0];
+    this.ctx = this.canvas.getContext('2d');
+    this.onResize();
+    window.addEventListener('resize', this.onResize.bind(this));
+  },
+
+  watch: {
+    value: function value(_value2) {
+      this.renderPattern();
+    }
+  },
+  methods: {
+    clearCanvas: function clearCanvas() {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    },
+    renderPattern: function renderPattern() {
+      this.clearCanvas();
+      this.canvas.patternizer(this.value);
+    },
+    onResize: function onResize() {
+      this.canvas.width = this.$el.offsetWidth;
+      this.canvas.height = this.$el.offsetHeight;
+      this.renderPattern();
+    }
+  }
+});
+
+window.pattern = {
+  stripes: [{
+    color: '#a03ad6',
+    rotation: 200,
+    opacity: 50,
+    // plaid: true,
+    mode: 'plaid',
+    width: 10,
+    gap: 10,
+    offset: 0,
+    visible: true
+  }, {
+    color: '#FFB4D6',
+    rotation: 45,
+    opacity: 80,
+    // plaid: false,
+    mode: 'normal',
+    width: 30,
+    gap: 10,
+    offset: 0,
+    visible: true
+  }],
+  bg: '#bb1a1a'
+};
+
+function migratePatternData(data) {
+  var newData = Object.assign({}, data);
+  var stripes = newData.stripes.map(function (stripe) {
+    var clone = Object.assign({}, stripe);
+    if (Object.prototype.hasOwnProperty.call(clone, 'mode')) {
+      clone.plaid = clone.mode === 'plaid';
+      delete clone.mode;
+    }
+    return clone;
+  });
+  newData.stripes = stripes;
+  return newData;
+}
+
+var app = new _vue2.default({
+  el: '#app',
+  components: {
+    draggable: _vuedraggable2.default
+  },
+  data: Object.assign({}, {
+    currentStripeId: 0
+  }, migratePatternData(window.pattern)),
+  methods: {
+    onRangeChange: function onRangeChange(event) {
+      var name = event.target.name;
+      var value = event.target.value;
+      this.stripes[this.currentStripeId][name] = Number(value);
+    },
+    onStripeClick: function onStripeClick() {
+      this.currentStripeId = this.getElementIndex(event.currentTarget);
+    },
+    removeStripe: function removeStripe(index) {
+      this.stripes.splice(index, 1);
+    },
+    getStripeClasses: function getStripeClasses(index) {
+      var classes = [];
+      if (this.currentStripeId === index) {
+        classes.push('stripes__item--active');
+      }
+      if (!this.stripes[index].visible) {
+        classes.push('stripes__item--hidden');
+      }
+      return classes.join(' ');
+    },
+    onSortUpdate: function onSortUpdate(event) {
+      this.currentStripeId = event.newIndex;
+    },
+    onNewStripe: function onNewStripe() {
+      var newStripe = Object.assign({}, this.stripes[this.currentStripeId]);
+      this.stripes.unshift(newStripe);
+      this.currentStripeId = 0;
+    },
+    getElementIndex: function getElementIndex(node) {
+      var index = 0;
+      while (node = node.previousElementSibling) {
+        index += 1;
+      }
+      return index;
+    },
+    dataFiltered: function dataFiltered() {
+      var visibleStripes = this.stripes.filter(function (stripe) {
+        return stripe.visible === true;
+      });
+      var stripesCleaned = visibleStripes.map(function (stripe) {
+        var clone = Object.assign({}, stripe);
+        delete clone.visible;
+        return clone;
+      });
+      return {
+        stripes: stripesCleaned,
+        bg: this.bg
+      };
+    }
+  }
+});
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(__webpack_provided_window_dot_jQuery) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**!
@@ -22875,6 +22854,33 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 });
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
 
 /***/ })
 /******/ ]);

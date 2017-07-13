@@ -115,9 +115,14 @@ Vue.component('rotation-input', {
 Vue.component('color-picker', {
   props: ['value'],
   template: `<div class='color-picker'>
-               <input type='text' data-colorpicker-input>
-               <div data-colorpicker-wrapper></div>
-             </div>`,
+                <label class="color-picker__label">
+                  <span class="color-picker__label-text">Color</span>
+                  <div class="color-picker__input-wrapper">
+                    <input type='text' class="color-picker__input" data-colorpicker-input>
+                    <div class="color-picker__picker" data-colorpicker-wrapper></div>
+                  </div>
+                </label>
+              </div>`,
   mounted() {
     const vm = this;
     // farbtastic $.browser fix
@@ -126,8 +131,8 @@ Vue.component('color-picker', {
     const $input = $(this.$el).find('[data-colorpicker-input]');
     $.farbtastic(this.$wrapper, {
       callback: $input,
-      width: 150,
-      height: 150,
+      width: 200,
+      height: 200,
     }).setColor(this.value);
     $input.on('change', this.updateValue);
   },
@@ -145,11 +150,14 @@ Vue.component('color-picker', {
 
 Vue.component('patternizer', {
   props: ['value'],
-  template: '<canvas data-patternizer></canvas>',
+  template: `<section class="preview">
+               <canvas class="preview__canvas" data-patternizer></canvas>
+             </section>`,
   mounted() {
-    this.canvas = this.$el;
+    this.canvas = $(this.$el).find('[data-patternizer]')[0];
     this.ctx = this.canvas.getContext('2d');
-    this.renderPattern();
+    this.onResize();
+    window.addEventListener('resize', this.onResize.bind(this));
   },
   watch: {
     value(value) {
@@ -163,6 +171,11 @@ Vue.component('patternizer', {
     renderPattern() {
       this.clearCanvas();
       this.canvas.patternizer(this.value);
+    },
+    onResize() {
+      this.canvas.width = this.$el.offsetWidth;
+      this.canvas.height = this.$el.offsetHeight;
+      this.renderPattern();
     },
   },
 });
@@ -222,7 +235,7 @@ const app = new Vue({
     migratePatternData(window.pattern)
   ),
   methods: {
-    onRangeChange() {
+    onRangeChange(event) {
       const name = event.target.name;
       const value = event.target.value;
       this.stripes[this.currentStripeId][name] = Number(value);
@@ -236,10 +249,10 @@ const app = new Vue({
     getStripeClasses(index) {
       const classes = [];
       if (this.currentStripeId === index) {
-        classes.push('active');
+        classes.push('stripes__item--active');
       }
       if (!this.stripes[index].visible) {
-        classes.push('hidden');
+        classes.push('stripes__item--hidden');
       }
       return classes.join(' ');
     },
