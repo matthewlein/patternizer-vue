@@ -2,6 +2,20 @@
   box-sizing: border-box;
 }
 
+// full height page
+html,
+body,
+.app {
+  height: 100%;
+}
+.app {
+  display: flex;
+  flex-direction: column;
+}
+.main {
+  flex: 1;
+}
+
 body {
   background-color: #7E7E7E;
   background-image: url('../images/bg-controls.png');
@@ -9,10 +23,34 @@ body {
   font-family: 'Helvetica Neue', Arial, sans-serif;
 }
 
+button {
+  cursor: pointer;
+}
+
 a {
   color: #fff;
   text-decoration: none;
 }
+
+input[type='number'] {
+    -moz-appearance:textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex__col-1_2 {
+  flex: 1;
+  width: 50%;
+}
+
+
 
 .main {
   display: flex;

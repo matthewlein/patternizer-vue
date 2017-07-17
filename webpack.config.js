@@ -12,6 +12,13 @@ const config = {
   module: {
     rules: [
       {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: {
+          loaders: {},
+        },
+      },
+      {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
@@ -30,11 +37,6 @@ const config = {
       jQuery: 'jquery',
       'window.jQuery': 'jquery',
     }),
-    // new webpack.optimize.CommonsChunkPlugin({
-    //   name: 'shared',
-    //   filename: './js/bundles/shared.bundle.js',
-    //   minChunks: 2,
-    // }),
   ],
   watch: true,
   cache: true,

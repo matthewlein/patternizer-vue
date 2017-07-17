@@ -4,15 +4,38 @@
   <meta charset="UTF-8">
   <title>Document</title>
   <link rel="stylesheet" href="css/frontend.css">
+  <link href="https://fonts.googleapis.com/css?family=Oswald|Roboto+Slab" rel="stylesheet">
 </head>
 <body>
-  <div id="app" v-cloak>
+  <div id="app" class="app" v-cloak>
     <header class="site-header">
-      <h1>Patternizer</h1>
-      <nav>
-        <ul>
-          <li>
-            <a href="">Hi</a>
+      <h1 class="logo">
+        <img class="logo-svg" src="images/logo.svg" alt="logo">Patternizer
+      </h1>
+      <nav class="site-nav">
+        <ul class="site-nav__list">
+          <li class="site-nav__item">
+            <a class="button button--left" href="#">New Pattern</a>
+          </li>
+          <li class="site-nav__item">
+            <a class="button button--right"href="#">Duplicate</a>
+          </li>
+          <li class="site-nav__item">
+            <a class="button" href="#">Save</a>
+          </li>
+          <li class="site-nav__item">
+            <a class="button" href="#">Code</a>
+            <!-- <pre>{{ dataFiltered() }}</pre> -->
+          </li>
+          <li class="site-nav__item dropdown" id="account">
+            <a class="button" href="#">Login</a>
+            <div class="menu">
+              <ul>
+                <li><a href="#">My Patterns</a></li>
+                <li><a href="#">My Account</a></li>
+                <li><a href="#">Log Out</a></li>
+              </ul>
+            </div>
           </li>
         </ul>
       </nav>
@@ -22,83 +45,50 @@
 
         <section class="stripe-settings">
 
-          <rotation-input v-model="stripes[currentStripeId].rotation"></rotation-input>
+          <div class="flex col-2">
+            <div class="flex__col-1_2">
+              <rotation-input v-model="stripes[currentStripeId].rotation"></rotation-input>
+            </div>
+            <div class="flex__col-1_2">
+              <color-picker v-model="stripes[currentStripeId].color" name="Color"></color-picker>
+              <label class="plaid__label controls__label" title="Stripes go vertically and horizontally">
+                Plaid
+                <input class="plaid__check" type="checkbox" v-model="stripes[currentStripeId].plaid">
+              </label>
+            </div>
+          </div>
 
-          <label title="Stripes go vertically and horizontally">
-            Plaid
-            <input type="checkbox" v-model="stripes[currentStripeId].plaid">
-          </label>
-
-          <color-picker v-model="stripes[currentStripeId].color"></color-picker>
-
-          <label class="controls__label">
-            <span class="controls__label-text">Opacity</span>
-            <div class="controls__range">
-              <input class="range" name="opacity" :value="stripes[currentStripeId].opacity" type="range" @input="onRangeChange" min="0" max="100">
-            </div>
-            <div class="controls__range-input-wrapper">
-              <input class="controls__range-input" name="opacity" :value="stripes[currentStripeId].opacity" type="number" @change="onRangeChange" min="0" max="100">
-            </div>
-          </label>
-          <label class="controls__label">
-            <span class="controls__label-text">Width</span>
-            <div class="controls__range">
-              <input name="width" :value="stripes[currentStripeId].width" type="range" class="range" @input="onRangeChange" min="1" max="200">
-            </div>
-            <div class="controls__range-input-wrapper">
-              <input class="controls__range-input" name="width" :value="stripes[currentStripeId].width" type="number" @change="onRangeChange" min="1" max="200">
-            </div>
-          </label>
-          <label class="controls__label">
-            <span class="controls__label-text">Gap</span>
-            <div class="controls__range">
-              <input name="gap" :value="stripes[currentStripeId].gap" type="range" class="range" @input="onRangeChange" min="1" max="200">
-            </div>
-            <div class="controls__range-input-wrapper">
-              <input class="controls__range-input" name="gap" :value="stripes[currentStripeId].gap" type="number" @change="onRangeChange" min="1" max="200">
-            </div>
-          </label>
-          <label class="controls__label">
-            <span class="controls__label-text">Offset</span>
-            <div class="controls__range">
-              <input name="offset" id="offset" :value="stripes[currentStripeId].offset" type="range" class="range" @input="onRangeChange" min="0" max="200">
-            </div>
-            <div class="controls__range-input-wrapper">
-              <input class="controls__range-input" name="offset" :value="stripes[currentStripeId].offset" type="number" @change="onRangeChange" min="0" max="200">
-            </div>
-          </label>
+          <range-input v-model="stripes[currentStripeId].opacity" name="Opacity" min="0" max="100"></range-input>
+          <range-input v-model="stripes[currentStripeId].width" name="Width" min="1" max="200"></range-input>
+          <range-input v-model="stripes[currentStripeId].gap" name="Gap" min="1" max="200"></range-input>
+          <range-input v-model="stripes[currentStripeId].offset" name="Offset" min="0" max="200"></range-input>
         </section>
 
         <section class="stripes">
-          <button class="controls__button" type="button" @click="onNewStripe">New Stripe</button>
+          <button class="stripes__new-button controls__button" type="button" @click="onNewStripe">＋New Stripe</button>
           <ol class="stripes__list">
             <draggable :list="stripes" @update="onSortUpdate">
               <li v-for="(stripe, index) in stripes" class="stripes__item" :class="getStripeClasses(index)" @click="onStripeClick">
-                <input type="checkbox" v-model="stripe.visible">
+                <label class="stripe__visible-label">
+                  <input class="stripe__visible-input" type="checkbox" v-model="stripe.visible">
+                  <div class="stripe__visible-box"></div>
+                </label>
                 <div class="stripes__item-color" :style="{ backgroundColor: stripe.color }"></div>
-                <button class="stripes__item-delete" type="button" @click="removeStripe(index)">X</button>
+                <button class="stripes__item-delete" type="button" @click="removeStripe(index)">⨉</button>
               </li>
             </draggable>
           </ol>
         </section>
 
-        <color-picker v-model="bg"></color-picker>
-
-        <!-- <pre>{{ dataFiltered() }}</pre> -->
+        <section class="background-settings">
+          <color-picker v-model="bg" name="Background Color" :top="true"></color-picker>
+        </section>
       </section>
 
-      <patternizer v-model="dataFiltered()"></patternizer>
+      <patternizer-preview v-model="dataFiltered()"></patternizer-preview>
     </main>
 
   </div>
-
-
-
-
-  <!--
-  <script src="js/farbtastic.js"></script>
-  <script src="js/patternizer.js"></script>
-  -->
 
   <script src="js/bundles/frontend.bundle.js"></script>
 </body>
