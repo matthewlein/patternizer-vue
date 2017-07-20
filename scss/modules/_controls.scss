@@ -104,6 +104,7 @@
   margin-bottom: 3px;
 }
 .controls__label-text {
+  text-transform: capitalize;
   line-height: 1.6;
   display: block;
   width: 100%;
@@ -206,7 +207,7 @@
 .stripe__visible-box {
   display: block;
   background:
-    url('/images/show-hide.svg'),
+    url('../images/show-hide.svg'),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.3) 100%);
   background-repeat: no-repeat;
   background-position: center center;
@@ -264,6 +265,7 @@
   text-align: right;
 }
 .color-picker__label-text {
+  text-transform: capitalize;
   flex: 1;
   margin-right: 5px;
 }

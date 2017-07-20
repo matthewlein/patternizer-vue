@@ -13,7 +13,6 @@ export default {
                 </label>
               </div>`,
   mounted() {
-    const vm = this;
     // farbtastic $.browser fix
     $.browser = { msie: false };
     this.$wrapper = $(this.$el).find('[data-colorpicker-wrapper]');
@@ -35,4 +34,4 @@ export default {
       $.farbtastic(this.$wrapper).setColor(value);
     },
   },
-}
+};

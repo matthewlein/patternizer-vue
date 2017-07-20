@@ -47,34 +47,34 @@
 
           <div class="flex col-2">
             <div class="flex__col-1_2">
-              <rotation-input v-model="stripes[currentStripeId].rotation"></rotation-input>
+              <rotation-input v-model="stripes[currentStripeIdx].rotation"></rotation-input>
             </div>
             <div class="flex__col-1_2">
-              <color-picker v-model="stripes[currentStripeId].color" name="Color"></color-picker>
+              <color-picker v-model="stripes[currentStripeIdx].color" name="Color"></color-picker>
               <label class="plaid__label controls__label" title="Stripes go vertically and horizontally">
                 Plaid
-                <input class="plaid__check" type="checkbox" v-model="stripes[currentStripeId].plaid">
+                <input class="plaid__check" type="checkbox" v-model="stripes[currentStripeIdx].plaid">
               </label>
             </div>
           </div>
 
-          <range-input v-model="stripes[currentStripeId].opacity" name="Opacity" min="0" max="100"></range-input>
-          <range-input v-model="stripes[currentStripeId].width" name="Width" min="1" max="200"></range-input>
-          <range-input v-model="stripes[currentStripeId].gap" name="Gap" min="1" max="200"></range-input>
-          <range-input v-model="stripes[currentStripeId].offset" name="Offset" min="0" max="200"></range-input>
+          <range-input v-model="stripes[currentStripeIdx].opacity" name="Opacity" min="0" max="100"></range-input>
+          <range-input v-model="stripes[currentStripeIdx].width" name="Width" min="1" max="200"></range-input>
+          <range-input v-model="stripes[currentStripeIdx].gap" name="Gap" min="1" max="200"></range-input>
+          <range-input v-model="stripes[currentStripeIdx].offset" name="Offset" min="0" max="200"></range-input>
         </section>
 
         <section class="stripes">
           <button class="stripes__new-button controls__button" type="button" @click="onNewStripe">＋New Stripe</button>
           <ol class="stripes__list">
             <draggable :list="stripes" @update="onSortUpdate">
-              <li v-for="(stripe, index) in stripes" class="stripes__item" :class="getStripeClasses(index)" @click="onStripeClick">
+              <li v-for="(stripe, index) in stripes" class="stripes__item" :class="getStripeClasses(index)" @click="onStripeClick(index)" :key="stripe.id">
                 <label class="stripe__visible-label">
                   <input class="stripe__visible-input" type="checkbox" v-model="stripe.visible">
                   <div class="stripe__visible-box"></div>
                 </label>
                 <div class="stripes__item-color" :style="{ backgroundColor: stripe.color }"></div>
-                <button class="stripes__item-delete" type="button" @click="removeStripe(index)">⨉</button>
+                <button class="stripes__item-delete" type="button" @click="removeStripe(index, $event)">⨉</button>
               </li>
             </draggable>
           </ol>
@@ -85,11 +85,36 @@
         </section>
       </section>
 
-      <patternizer-preview v-model="dataFiltered()"></patternizer-preview>
+      <patternizer-preview v-model="dataFiltered"></patternizer-preview>
     </main>
 
   </div>
 
+  <script>
+    window.pattern = {
+      stripes: [
+        {
+          color: '#a03ad6',
+          rotation: 200,
+          opacity: 50,
+          mode: 'plaid',
+          width: 10,
+          gap: 10,
+          offset: 0,
+        },
+        {
+          color: '#FFB4D6',
+          rotation: 45,
+          opacity: 80,
+          mode: 'normal',
+          width: 30,
+          gap: 10,
+          offset: 0,
+        },
+      ],
+      bg: '#ffffff',
+    };
+  </script>
   <script src="js/bundles/frontend.bundle.js"></script>
 </body>
 </html>

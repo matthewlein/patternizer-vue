@@ -24,5 +24,3 @@ rules:
   ]
   comma-dangle: [warn, 'always-multiline']
 
-globals:
-  filepicker: true

@@ -1,35 +1,13 @@
 import Vue from 'vue';
 import draggable from 'vuedraggable';
+import uniqueId from 'lodash/uniqueId';
+
 import PatternizerPreview from './components/patternizer-preview';
 import RotationInput from './components/rotation-input';
 import ColorPicker from './components/color-picker';
 import RangeInput from './components/range-input';
 
-window.pattern = {
-  stripes: [
-    {
-      color: '#a03ad6',
-      rotation: 200,
-      opacity: 50,
-      mode: 'plaid',
-      width: 10,
-      gap: 10,
-      offset: 0,
-    },
-    {
-      color: '#FFB4D6',
-      rotation: 45,
-      opacity: 80,
-      mode: 'normal',
-      width: 30,
-      gap: 10,
-      offset: 0,
-    },
-  ],
-  bg: '#ffffff',
-};
-
-function migratePatternData(data) {
+function preparePatternData(data) {
   const newData = Object.assign({}, data);
   const stripes = newData.stripes.map((stripe) => {
     const clone = Object.assign({}, stripe);
@@ -38,6 +16,7 @@ function migratePatternData(data) {
       delete clone.mode;
     }
     clone.visible = true;
+    clone.id = uniqueId();
     return clone;
   });
   newData.stripes = stripes;
@@ -54,54 +33,12 @@ const app = new Vue({
     'range-input': RangeInput,
   },
   data: Object.assign(
-    {},
     {
-      currentStripeId: 0,
+      currentStripeIdx: 0,
     },
-    migratePatternData(window.pattern)
+    preparePatternData(window.pattern)
   ),
-  methods: {
-    onStripeClick() {
-      this.currentStripeId = this.getElementIndex(event.currentTarget);
-    },
-    removeStripe(index) {
-      if (this.stripes.length === 1) {
-        return;
-      }
-      if (this.currentStripeId === index) {
-        // TODO: this part doesn't work right...
-        this.currentStripeId -= 1;
-        if (this.currentStripeId <= 0) {
-          this.currentStripeId = 0;
-        }
-      }
-      this.stripes.splice(index, 1);
-    },
-    getStripeClasses(index) {
-      const classes = [];
-      if (this.currentStripeId === index) {
-        classes.push('stripes__item--active');
-      }
-      if (!this.stripes[index].visible) {
-        classes.push('stripes__item--hidden');
-      }
-      return classes.join(' ');
-    },
-    onSortUpdate(event) {
-      this.currentStripeId = event.newIndex;
-    },
-    onNewStripe() {
-      const newStripe = Object.assign({}, this.stripes[this.currentStripeId]);
-      this.stripes.unshift(newStripe);
-      this.currentStripeId = 0;
-    },
-    getElementIndex(node) {
-      let index = 0;
-      while ((node = node.previousElementSibling)) {
-        index += 1;
-      }
-      return index;
-    },
+  computed: {
     dataFiltered() {
       const visibleStripes = this.stripes.filter(stripe => (stripe.visible === true));
       const stripesCleaned = visibleStripes.map((stripe) => {
@@ -113,6 +50,51 @@ const app = new Vue({
         stripes: stripesCleaned,
         bg: this.bg,
       };
+    },
+  },
+  methods: {
+    getStripeClasses(index) {
+      const classes = [];
+      if (this.currentStripeIdx === index) {
+        classes.push('stripes__item--active');
+      }
+      if (!this.stripes[index].visible) {
+        classes.push('stripes__item--hidden');
+      }
+      return classes.join(' ');
+    },
+    onStripeClick(index) {
+      this.currentStripeIdx = index;
+    },
+    onSortUpdate(event) {
+      this.currentStripeIdx = event.newIndex;
+    },
+    removeStripe(index, event) {
+      event.stopPropagation();
+      let newIndex = index;
+      if (this.stripes.length === 1) {
+        return;
+      }
+      if (this.currentStripeIdx === index) {
+        newIndex -= 1;
+        if (newIndex <= 0) {
+          newIndex = 0;
+        }
+      }
+      const newStripes = this.stripes.slice();
+      newStripes.splice(index, 1);
+
+      this.currentStripeIdx = newIndex;
+      this.stripes = newStripes;
+    },
+    onNewStripe() {
+      const newStripe = Object.assign({}, this.stripes[this.currentStripeIdx]);
+      newStripe.id = uniqueId();
+      const newStripes = this.stripes.slice();
+      newStripes.unshift(newStripe);
+
+      this.stripes = newStripes;
+      this.currentStripeIdx = 0;
     },
   },
 });
