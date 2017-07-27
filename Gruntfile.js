@@ -189,7 +189,7 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'compile:prod',
     'postcss',
-    'filerev',
-    'usemin'
+    // 'filerev',
+    // 'usemin'
   ]);
 };
